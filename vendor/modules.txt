@@ -33,7 +33,6 @@ github.com/gagliardetto/gofuzz/bytesource
 # github.com/gagliardetto/solana-go v1.8.2
 ## explicit; go 1.16
 github.com/gagliardetto/solana-go
-github.com/gagliardetto/solana-go/programs/system
 github.com/gagliardetto/solana-go/programs/token
 github.com/gagliardetto/solana-go/rpc
 github.com/gagliardetto/solana-go/rpc/jsonrpc

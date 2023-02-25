@@ -1,12 +1,12 @@
-package gorcagithub
+package gorca
 
 import (
 	"context"
 	"fmt"
+	whirlpool2 "github.com/Norbaeocystin/gorca/whirlpool"
 	bin "github.com/gagliardetto/binary"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/rpc"
-	whirlpool2 "gorca/whirlpool"
 	"log"
 )
 

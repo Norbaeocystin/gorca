@@ -1,4 +1,4 @@
-package gorcagithub
+package gorca
 
 import "math/big"
 

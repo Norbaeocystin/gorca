@@ -1,4 +1,4 @@
-package gorcagithub
+package gorca
 
 import "github.com/gagliardetto/solana-go"
 

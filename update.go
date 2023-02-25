@@ -1,11 +1,11 @@
-package gorcagithub
+package gorca
 
 import (
 	"context"
 	"fmt"
+	whirlpool2 "github.com/Norbaeocystin/gorca/whirlpool"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/rpc"
-	whirlpool2 "gorca/whirlpool"
 )
 
 func Update(client *rpc.Client, whirlpoolAddress, position solana.PublicKey, owner solana.PrivateKey, positionLowerTick, positionUpperTick int32) solana.Signature {
