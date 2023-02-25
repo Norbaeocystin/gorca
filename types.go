@@ -1,4 +1,4 @@
-package gorca
+package gorcagithub
 
 import (
 	bin "github.com/gagliardetto/binary"

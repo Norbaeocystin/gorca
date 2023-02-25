@@ -1,40 +1,25 @@
-package gorca
+package gorcagithub
 
 import (
 	"context"
 	"fmt"
-	bin "github.com/gagliardetto/binary"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/rpc"
-	"gorca/pkg/whirlpool"
+	whirlpool2 "gorca/whirlpool"
+	"log"
 )
 
-func Swap(client *rpc.Client, amountIn, amountOutMin uint64, sqrtPriceLimit bin.Uint128, amountSpecifiedIsInput, AtoB bool, tokenA, tokenB,
-	tokenAVault, tokenBVault, oracle, wpPool solana.PublicKey, tickArrays [2]solana.PublicKey, owner solana.PrivateKey) (solana.Signature, error) {
-	whirlpool.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
-	i0 := solana.NewInstruction(COMPUTE_BUDGET,
-		[]*solana.AccountMeta{},
-		// fee 1, u
-		[]uint8{0, 32, 161, 7, 0, 1, 0, 0, 0},
-	)
-
-	i := whirlpool.NewSwapInstruction(
-		amountIn,
-		amountOutMin,
-		sqrtPriceLimit,
-		amountSpecifiedIsInput,
-		AtoB,
-		solana.TokenProgramID,
+func BurnPosition(client rpc.Client, position, positionMint, positionTokenAccount solana.PublicKey,
+	owner solana.PrivateKey) solana.Signature {
+	log.Println("sending burn/close transactions")
+	whirlpool2.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
+	inst := whirlpool2.NewClosePositionInstruction(
 		owner.PublicKey(),
-		wpPool,
-		tokenA,
-		tokenAVault,
-		tokenB,
-		tokenBVault,
-		tickArrays[0],
-		tickArrays[0],
-		tickArrays[1],
-		oracle,
+		owner.PublicKey(),
+		position,
+		positionMint,
+		positionTokenAccount,
+		solana.TokenProgramID,
 	).Build()
 	recent, err := client.GetRecentBlockhash(context.TODO(), rpc.CommitmentFinalized)
 	if err != nil {
@@ -42,7 +27,7 @@ func Swap(client *rpc.Client, amountIn, amountOutMin uint64, sqrtPriceLimit bin.
 	}
 	tx, err := solana.NewTransaction(
 		[]solana.Instruction{
-			i0, i,
+			inst,
 		},
 		recent.Value.Blockhash, //NONCE
 		solana.TransactionPayer(owner.PublicKey()),
@@ -69,6 +54,9 @@ func Swap(client *rpc.Client, amountIn, amountOutMin uint64, sqrtPriceLimit bin.
 			MinContextSlot:      nil,
 		},
 	)
+	if err != nil {
+		panic(err)
+	}
 	// log.Println(sig)
-	return sig, err
+	return sig
 }

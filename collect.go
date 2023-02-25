@@ -1,23 +1,26 @@
-package gorca
+package gorcagithub
 
 import (
 	"context"
 	"fmt"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/rpc"
-	"gorca/pkg/whirlpool"
+	whirlpool2 "gorca/whirlpool"
 )
 
-func Update(client *rpc.Client, whirlpoolAddress, position solana.PublicKey, owner solana.PrivateKey, positionLowerTick, positionUpperTick int32) solana.Signature {
-	whirlpool.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
-	ktas := GetTickArrays(client, whirlpoolAddress)
-	lowerArray := GetTickArray(positionLowerTick, ktas)
-	upperArray := GetTickArray(positionUpperTick, ktas)
-	inst := whirlpool.NewUpdateFeesAndRewardsInstruction(
+func Collect(client *rpc.Client, whirlpoolAddress, position, positionTokenAccount,
+	tokenOwnerAccountA, tokenVaultA, tokenOwnerAccountB, tokenVaultB solana.PublicKey, owner solana.PrivateKey) solana.Signature {
+	whirlpool2.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
+	i := whirlpool2.NewCollectFeesInstruction(
 		whirlpoolAddress,
+		owner.PublicKey(),
 		position,
-		lowerArray.Account,
-		upperArray.Account,
+		positionTokenAccount,
+		tokenOwnerAccountA,
+		tokenVaultA,
+		tokenOwnerAccountB,
+		tokenVaultB,
+		solana.TokenProgramID,
 	).Build()
 	recent, err := client.GetRecentBlockhash(context.TODO(), rpc.CommitmentFinalized)
 	if err != nil {
@@ -26,7 +29,7 @@ func Update(client *rpc.Client, whirlpoolAddress, position solana.PublicKey, own
 
 	tx, err := solana.NewTransaction(
 		[]solana.Instruction{
-			inst,
+			i,
 		},
 		recent.Value.Blockhash, //NONCE
 		solana.TransactionPayer(owner.PublicKey()),

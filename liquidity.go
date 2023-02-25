@@ -1,4 +1,4 @@
-package gorca
+package gorcagithub
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	bin "github.com/gagliardetto/binary"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/rpc"
-	"gorca/pkg/whirlpool"
+	whirlpool2 "gorca/whirlpool"
 	"log"
 	"math"
 	"math/big"
@@ -42,7 +42,7 @@ func IncreaseLiquidityWSOL(client *rpc.Client, tokenAMax, tokenBMax uint64,
 	position, positionTokenAccount, tokenAAddress, tokenBAddress, whirlpoolAddress solana.PublicKey,
 	owner solana.PrivateKey, positionLowerTick, positionUpperTick int32) solana.Signature {
 	// (token A * token B)^(1/2) / (pool token supply)
-	whirlpool.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
+	whirlpool2.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
 	ktas := GetTickArrays(client, whirlpoolAddress)
 	lowerArray := GetTickArray(positionLowerTick, ktas)
 	upperArray := GetTickArray(positionUpperTick, ktas)
@@ -53,7 +53,7 @@ func IncreaseLiquidityWSOL(client *rpc.Client, tokenAMax, tokenBMax uint64,
 		log.Fatal(err)
 	}
 	// log.Println(liquiditySupply)
-	i3 := whirlpool.NewIncreaseLiquidityInstruction(
+	i3 := whirlpool2.NewIncreaseLiquidityInstruction(
 		liquiditySupply,
 		tokenAMax,
 		tokenBMax,
@@ -118,7 +118,7 @@ func IncreaseLiquidityWSOL(client *rpc.Client, tokenAMax, tokenBMax uint64,
 func DecreaseUpdateCollectBurn(client *rpc.Client, liquidity bin.Uint128, tokenAMin, tokenBMin uint64,
 	position, positionMint, positionTokenAccount, tokenAAddress, tokenBAddress, tokenVaultA, tokenVaultB, whirlpoolAddress solana.PublicKey,
 	owner solana.PrivateKey, positionLowerTick, positionUpperTick int32) (solana.Signature, error) {
-	whirlpool.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
+	whirlpool2.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
 	ktas := GetTickArrays(client, whirlpoolAddress)
 	lowerArray := GetTickArray(positionLowerTick, ktas)
 	upperArray := GetTickArray(positionUpperTick, ktas)
@@ -130,7 +130,7 @@ func DecreaseUpdateCollectBurn(client *rpc.Client, liquidity bin.Uint128, tokenA
 		// fee 1, u
 		[]uint8{0, 32, 161, 7, 0, 1, 0, 0, 0},
 	)
-	i2 := whirlpool.NewDecreaseLiquidityInstruction(
+	i2 := whirlpool2.NewDecreaseLiquidityInstruction(
 		liquidity,
 		tokenAMin,
 		tokenBMin,
@@ -147,14 +147,14 @@ func DecreaseUpdateCollectBurn(client *rpc.Client, liquidity bin.Uint128, tokenA
 		upperArray.Account, //tickarray,
 	).Build()
 	// UPDATE
-	i1 := whirlpool.NewUpdateFeesAndRewardsInstruction(
+	i1 := whirlpool2.NewUpdateFeesAndRewardsInstruction(
 		whirlpoolAddress,
 		position,
 		lowerArray.Account, // tickarray,
 		upperArray.Account, //tickarray,
 	).Build()
 	// COLLECT FEES
-	i3 := whirlpool.NewCollectFeesInstruction(
+	i3 := whirlpool2.NewCollectFeesInstruction(
 		whirlpoolAddress,
 		owner.PublicKey(),
 		position,
@@ -166,7 +166,7 @@ func DecreaseUpdateCollectBurn(client *rpc.Client, liquidity bin.Uint128, tokenA
 		solana.TokenProgramID,
 	).Build()
 	// BURN
-	i4 := whirlpool.NewClosePositionInstruction(
+	i4 := whirlpool2.NewClosePositionInstruction(
 		owner.PublicKey(),
 		owner.PublicKey(),
 		position,

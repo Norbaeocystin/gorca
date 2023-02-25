@@ -1,11 +1,11 @@
-package gorca
+package gorcagithub
 
 import (
 	"context"
 	bin "github.com/gagliardetto/binary"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/rpc"
-	"gorca/pkg/whirlpool"
+	"gorca/whirlpool"
 	"log"
 	"sort"
 )

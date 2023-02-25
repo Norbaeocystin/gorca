@@ -1,30 +1,29 @@
-package gorca
+package gorcagithub
 
 import (
 	"context"
 	"fmt"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/rpc"
-	"gorca/pkg/whirlpool"
-	"log"
+	whirlpool2 "gorca/whirlpool"
 )
 
-func BurnPosition(client rpc.Client, position, positionMint, positionTokenAccount solana.PublicKey,
-	owner solana.PrivateKey) solana.Signature {
-	log.Println("sending burn/close transactions")
-	whirlpool.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
-	inst := whirlpool.NewClosePositionInstruction(
-		owner.PublicKey(),
-		owner.PublicKey(),
+func Update(client *rpc.Client, whirlpoolAddress, position solana.PublicKey, owner solana.PrivateKey, positionLowerTick, positionUpperTick int32) solana.Signature {
+	whirlpool2.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
+	ktas := GetTickArrays(client, whirlpoolAddress)
+	lowerArray := GetTickArray(positionLowerTick, ktas)
+	upperArray := GetTickArray(positionUpperTick, ktas)
+	inst := whirlpool2.NewUpdateFeesAndRewardsInstruction(
+		whirlpoolAddress,
 		position,
-		positionMint,
-		positionTokenAccount,
-		solana.TokenProgramID,
+		lowerArray.Account,
+		upperArray.Account,
 	).Build()
 	recent, err := client.GetRecentBlockhash(context.TODO(), rpc.CommitmentFinalized)
 	if err != nil {
 		panic(err)
 	}
+
 	tx, err := solana.NewTransaction(
 		[]solana.Instruction{
 			inst,
@@ -32,8 +31,6 @@ func BurnPosition(client rpc.Client, position, positionMint, positionTokenAccoun
 		recent.Value.Blockhash, //NONCE
 		solana.TransactionPayer(owner.PublicKey()),
 	)
-	// log.Println(tx, err)
-	// TODO intiliaze those 2 accounts
 	_, err = tx.Sign(
 		func(key solana.PublicKey) *solana.PrivateKey {
 			if owner.PublicKey().Equals(key) {

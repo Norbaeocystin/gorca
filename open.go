@@ -1,4 +1,4 @@
-package gorca
+package gorcagithub
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	bin "github.com/gagliardetto/binary"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/rpc"
-	"gorca/pkg/whirlpool"
+	whirlpool2 "gorca/whirlpool"
 	"log"
 )
 
@@ -17,7 +17,7 @@ func OpenNewPositionAndAddLiquidity(tickLower,
 	lowerArray := GetTickArray(tickLower, ktas)
 	upperArray := GetTickArray(tickUpper, ktas)
 	owner := wallet
-	whirlpool.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
+	whirlpool2.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
 	positionMint := solana.NewWallet()
 	position, bump, _ := solana.FindProgramAddress([][]byte{[]byte("position"), positionMint.PublicKey().Bytes()},
 		ORCA_WHIRPOOL_PROGRAM_ID)
@@ -42,8 +42,8 @@ func OpenNewPositionAndAddLiquidity(tickLower,
 		// fee 1, u
 		[]uint8{0, 32, 161, 7, 0, 1, 0, 0, 0},
 	)
-	i1 := whirlpool.NewOpenPositionWithMetadataInstruction(
-		whirlpool.OpenPositionWithMetadataBumps{bump, bump2},
+	i1 := whirlpool2.NewOpenPositionWithMetadataInstruction(
+		whirlpool2.OpenPositionWithMetadataBumps{bump, bump2},
 		tickLower,
 		tickUpper,
 		owner.PublicKey(),
@@ -60,7 +60,7 @@ func OpenNewPositionAndAddLiquidity(tickLower,
 		ORCA_METADATA_PROGRAM_ID,
 		solana.MustPublicKeyFromBase58("3axbTs2z5GBy6usVbNVoqEgZMng3vZvMnAoX29BFfwhr"),
 	).Build()
-	i2 := whirlpool.NewIncreaseLiquidityInstruction(
+	i2 := whirlpool2.NewIncreaseLiquidityInstruction(
 		liquidity,
 		tokenAMax,
 		tokenBMax,
