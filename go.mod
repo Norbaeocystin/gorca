@@ -1,4 +1,4 @@
-module gorca
+module github/Norbaeocystin/gorca
 
 go 1.18
 
