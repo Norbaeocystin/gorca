@@ -62,7 +62,7 @@ func GetAllLiquidities(client *rpc.Client, market solana.PublicKey) LiquidityDat
 					liqForTick.Current = false
 				}
 				if tickData.LiquidityNet.BigInt().Cmp(big.NewInt(0)) == 1 {
-					token0, token1 := CalculateAmounts(tickData.LiquidityNet.BigInt(), int64(tick-int32(poolData.TickSpacing)), int64(tick+int32(poolData.TickSpacing)), int64(tick))
+					token0, token1 := CalculateAmounts(tickData.LiquidityNet.BigInt(), int64(tick-int32(poolData.TickSpacing)), int64(tick+int32(poolData.TickSpacing)), int64(poolData.TickCurrentIndex))
 					liqForTick.Token0 = token0
 					liqForTick.Token1 = token1
 				}
