@@ -23,8 +23,6 @@ type LiquidityForTick struct {
 	TickPrice      float64
 	LiquidityNet   *big.Int
 	LiquidityGross *big.Int
-	Token0         *big.Int
-	Token1         *big.Int
 }
 
 func GetAllLiquidities(client *rpc.Client, market solana.PublicKey) LiquidityData {
@@ -49,7 +47,7 @@ func GetAllLiquidities(client *rpc.Client, market solana.PublicKey) LiquidityDat
 	for _, kta := range ktas {
 		for idx, tickData := range kta.TickArray.Ticks {
 			tick := int32((int(poolData.TickSpacing) * idx)) + kta.TickArray.StartTickIndex
-			if tickData.LiquidityNet.BigInt().Cmp(big.NewInt(0)) != 0 {
+			if tickData.LiquidityGross.BigInt().Cmp(big.NewInt(0)) != 0 {
 				var liqForTick LiquidityForTick
 				price := (math.Pow(1.0001, float64(tick)) * token0Decimals) / token1Decimals
 				liqForTick.LiquidityNet = tickData.LiquidityNet.BigInt()
@@ -60,11 +58,6 @@ func GetAllLiquidities(client *rpc.Client, market solana.PublicKey) LiquidityDat
 					liqForTick.Current = true
 				} else {
 					liqForTick.Current = false
-				}
-				if tickData.LiquidityNet.BigInt().Cmp(big.NewInt(0)) == 1 {
-					token0, token1 := CalculateAmounts(tickData.LiquidityNet.BigInt(), int64(tick-int32(poolData.TickSpacing)), int64(tick+int32(poolData.TickSpacing)), int64(poolData.TickCurrentIndex))
-					liqForTick.Token0 = token0
-					liqForTick.Token1 = token1
 				}
 				lickForTicks = append(lickForTicks, liqForTick)
 			}
