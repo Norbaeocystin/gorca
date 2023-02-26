@@ -1,8 +1,9 @@
-module github.com/Norbaeocystin/gorca
+module github.com/norbaeocystin/gorca
 
 go 1.18
 
 require (
+	github.com/Norbaeocystin/gorca v1.0.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/gagliardetto/binary v0.7.8
 	github.com/gagliardetto/gofuzz v1.2.2

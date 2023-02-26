@@ -46,7 +46,7 @@ func IncreaseLiquidityWSOL(client *rpc.Client, tokenAMax, tokenBMax uint64,
 	ktas := GetTickArrays(client, whirlpoolAddress)
 	lowerArray := GetTickArray(positionLowerTick, ktas)
 	upperArray := GetTickArray(positionUpperTick, ktas)
-	wpPoolData := GetWhirlpoolData(*client, whirlpoolAddress)
+	wpPoolData := GetWhirlpoolData(client, whirlpoolAddress)
 	liq := LiquidityInfiniteCurve(tokenAMax, tokenBMax)
 	liquiditySupply, err := BigIntToBinUint128(liq)
 	if err != nil {
@@ -210,4 +210,26 @@ func DecreaseUpdateCollectBurn(client *rpc.Client, liquidity bin.Uint128, tokenA
 	)
 	// log.Println(sig)
 	return sig, err
+}
+
+// inverse function to CalculateLiquidity
+func CalculateAmounts(liquidity *big.Int, lowerTick, upperTick, tick int64) (*big.Int, *big.Int) {
+	low := CalculateSqrtPriceQ64(big.NewFloat(math.Pow(1.0001, float64(lowerTick))))
+	current := CalculateSqrtPriceQ64(big.NewFloat(math.Pow(1.0001, float64(tick))))
+	upper := CalculateSqrtPriceQ64(big.NewFloat(math.Pow(1.0001, float64(upperTick))))
+	var diff0 *big.Int
+	if current.Cmp(upper) == 1 {
+		diff0 = new(big.Int).Sub(current, upper)
+	} else {
+		diff0 = new(big.Int).Sub(upper, current)
+	}
+	var diff1 *big.Int
+	if current.Cmp(low) == 1 {
+		diff1 = new(big.Int).Sub(current, low)
+	} else {
+		diff1 = new(big.Int).Sub(low, current)
+	}
+	l0 := new(big.Int).Div(new(big.Int).Mul(new(big.Int).Mul(liquidity, diff0), Q64BI), new(big.Int).Mul(current, upper))
+	l1 := new(big.Int).Div(new(big.Int).Mul(liquidity, diff1), Q64BI)
+	return l0, l1
 }

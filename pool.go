@@ -7,7 +7,7 @@ import (
 	"github.com/gagliardetto/solana-go/rpc"
 )
 
-func GetWhirlpoolData(client rpc.Client, whirlpoolAddress solana.PublicKey) WhirlpoolData {
+func GetWhirlpoolData(client *rpc.Client, whirlpoolAddress solana.PublicKey) WhirlpoolData {
 	account, _ := client.GetAccountInfoWithOpts(context.TODO(),
 		whirlpoolAddress,
 		&rpc.GetAccountInfoOpts{

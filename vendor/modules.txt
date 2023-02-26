@@ -5,6 +5,9 @@ contrib.go.opencensus.io/exporter/stackdriver/propagation
 ## explicit; go 1.17
 filippo.io/edwards25519
 filippo.io/edwards25519/field
+# github.com/Norbaeocystin/gorca v1.0.0
+## explicit; go 1.18
+github.com/Norbaeocystin/gorca/whirlpool
 # github.com/andres-erbsen/clock v0.0.0-20160526145045-9e14626cd129
 ## explicit
 github.com/andres-erbsen/clock
