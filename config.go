@@ -12,3 +12,4 @@ var WHIRPOOL_WSOLUSDC_03 = "HJPjoWUrhoZzkNfRpHuieeFk9WcZWjwy6PBjZ81ngndJ"
 var ORACLE_WSOLUSDC_03 = solana.MustPublicKeyFromBase58("4GkRbcYg1VKsZropgai4dMf2Nj2PkXNLf43knFpavrSi")
 var ORACLE_WSOLUSDC_005 = solana.MustPublicKeyFromBase58("6vK8gSiRHSnZzAa5JsvBF2ej1LrxpRX21Y185CzP4PeA")
 var COMPUTE_BUDGET = solana.MustPublicKeyFromBase58("ComputeBudget111111111111111111111111111111")
+var API_WHILPOOLS = "https://api.mainnet.orca.so/v1/whirlpool/list"
