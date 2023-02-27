@@ -97,19 +97,19 @@ type WhirlpoolsApi struct {
 			Month float64 `json:"month"`
 		} `json:"feeApr,omitempty"`
 		Reward0Apr struct {
-			Day   int `json:"day"`
-			Week  int `json:"week"`
-			Month int `json:"month"`
+			Day   float64 `json:"day"`
+			Week  float64 `json:"week"`
+			Month float64 `json:"month"`
 		} `json:"reward0Apr,omitempty"`
 		Reward1Apr struct {
-			Day   int `json:"day"`
-			Week  int `json:"week"`
-			Month int `json:"month"`
+			Day   float64 `json:"day"`
+			Week  float64 `json:"week"`
+			Month float64 `json:"month"`
 		} `json:"reward1Apr,omitempty"`
 		Reward2Apr struct {
-			Day   int `json:"day"`
-			Week  int `json:"week"`
-			Month int `json:"month"`
+			Day   float64 `json:"day"`
+			Week  float64 `json:"week"`
+			Month float64 `json:"month"`
 		} `json:"reward2Apr,omitempty"`
 		TotalApr struct {
 			Day   float64 `json:"day"`
