@@ -43,7 +43,7 @@ func IncreaseLiquidityWSOL(client *rpc.Client, tokenAMax, tokenBMax uint64,
 	owner solana.PrivateKey, positionLowerTick, positionUpperTick int32) solana.Signature {
 	// (token A * token B)^(1/2) / (pool token supply)
 	whirlpool2.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
-	ktas := GetTickArrays(client, whirlpoolAddress)
+	ktas := GetTickArrays(client, ORCA_WHIRPOOL_PROGRAM_ID, whirlpoolAddress)
 	lowerArray := GetTickArray(positionLowerTick, ktas)
 	upperArray := GetTickArray(positionUpperTick, ktas)
 	wpPoolData := GetWhirlpoolData(client, whirlpoolAddress)
@@ -119,7 +119,7 @@ func DecreaseUpdateCollectBurn(client *rpc.Client, liquidity bin.Uint128, tokenA
 	position, positionMint, positionTokenAccount, tokenAAddress, tokenBAddress, tokenVaultA, tokenVaultB, whirlpoolAddress solana.PublicKey,
 	owner solana.PrivateKey, positionLowerTick, positionUpperTick int32) (solana.Signature, error) {
 	whirlpool2.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
-	ktas := GetTickArrays(client, whirlpoolAddress)
+	ktas := GetTickArrays(client, ORCA_WHIRPOOL_PROGRAM_ID, whirlpoolAddress)
 	lowerArray := GetTickArray(positionLowerTick, ktas)
 	upperArray := GetTickArray(positionUpperTick, ktas)
 	GetPositionData(client, position)
