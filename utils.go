@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	bin "github.com/gagliardetto/binary"
+	"math"
 	"math/big"
 )
 
@@ -44,4 +45,8 @@ func BigIntToBinUint128(value *big.Int) (bin.Uint128, error) {
 	//high := make([]byte, 8)
 	//log.Println(low, high)
 	return returnValue, nil
+}
+
+func PriceToTick(price float64) int32 {
+	return int32(math.Log(price) / math.Log(1.0001))
 }
