@@ -13,7 +13,7 @@ import (
 func OpenNewPositionAndAddLiquidity(tickLower,
 	tickUpper int32, client rpc.Client, tokenAMax, tokenBMax uint64, liquidity bin.Uint128, tokenAAddress, tokenBAddress, TokenVaultA,
 	TokenVaultB, WPPool solana.PublicKey, wallet solana.PrivateKey) (solana.Signature, error) {
-	ktas := GetTickArrays(&client, WPPool)
+	ktas := GetTickArrays(&client, whirlpool2.ProgramID, WPPool)
 	lowerArray := GetTickArray(tickLower, ktas)
 	upperArray := GetTickArray(tickUpper, ktas)
 	owner := wallet

@@ -2,6 +2,7 @@ package gorca
 
 import (
 	"context"
+	"github.com/Norbaeocystin/gorca/whirlpool"
 	bin "github.com/gagliardetto/binary"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/programs/token"
@@ -42,7 +43,7 @@ func GetAllLiquidities(client *rpc.Client, market solana.PublicKey) LiquidityDat
 	token1Decimals := math.Pow(10, float64(quoteData.Decimals))
 	liqData.Token0 = baseData
 	liqData.Token1 = quoteData
-	ktas := GetTickArrays(client, market)
+	ktas := GetTickArrays(client, whirlpool.ProgramID, market)
 	lickForTicks := make([]LiquidityForTick, 0)
 	for _, kta := range ktas {
 		for idx, tickData := range kta.TickArray.Ticks {

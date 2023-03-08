@@ -32,7 +32,7 @@ func Swap(client *rpc.Client, amountIn, amountOutMin uint64, sqrtPriceLimit bin.
 		tokenB,
 		tokenBVault,
 		tickArrays[0],
-		tickArrays[0],
+		tickArrays[1],
 		tickArrays[1],
 		oracle,
 	).Build()

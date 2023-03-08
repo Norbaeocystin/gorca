@@ -7,6 +7,17 @@ import (
 	"github.com/gagliardetto/solana-go/rpc"
 )
 
+func NewMarket(client *rpc.Client, programId, marketId solana.PublicKey) Market {
+	var m Market
+	m.Client = client
+	m.ProgramId = programId
+	m.MarketId = marketId
+	m.SetKtas()
+	m.FetchData()
+	m.SetOracle()
+	return m
+}
+
 type Market struct {
 	ProgramId     solana.PublicKey
 	MarketId      solana.PublicKey
@@ -14,6 +25,15 @@ type Market struct {
 	Oracle        solana.PublicKey
 	KTAS          []KeyedTickArray
 	Client        *rpc.Client
+}
+
+func (m Market) FetchData() WhirlpoolData {
+	data := GetWhirlpoolData(m.Client, m.MarketId)
+	return data
+}
+
+func (m *Market) SetData() {
+	m.WhirlpoolData = m.FetchData()
 }
 
 func (m *Market) SetOracle() {
@@ -25,7 +45,7 @@ func (m Market) FetchKtas() []KeyedTickArray {
 	return ktas
 }
 
-func (m *Market) FetchAndSetKtas() {
+func (m *Market) SetKtas() {
 	m.KTAS = m.FetchKtas()
 }
 

@@ -10,7 +10,7 @@ import (
 
 func Update(client *rpc.Client, whirlpoolAddress, position solana.PublicKey, owner solana.PrivateKey, positionLowerTick, positionUpperTick int32) solana.Signature {
 	whirlpool2.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID
-	ktas := GetTickArrays(client, whirlpoolAddress)
+	ktas := GetTickArrays(client, whirlpool2.ProgramID, whirlpoolAddress)
 	lowerArray := GetTickArray(positionLowerTick, ktas)
 	upperArray := GetTickArray(positionUpperTick, ktas)
 	inst := whirlpool2.NewUpdateFeesAndRewardsInstruction(
