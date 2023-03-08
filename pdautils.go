@@ -51,4 +51,9 @@ func GetTickArrayViaFPA(programID, whirlpoolAddress solana.PublicKey, startTick 
 
 //func GetTickArrayFromTickIndex(){}
 //func GetTickArrayFromSqrtPrice(){}
-//func GetFeeTier(){}
+func GetFeeTier(programID, configKey solana.PublicKey, tickSpacing uint16) (solana.PublicKey, uint8, error) {
+	buff := [2]byte{}
+	binary.LittleEndian.PutUint16(buff[:], tickSpacing)
+	address, bump, err := solana.FindProgramAddress([][]byte{[]byte(PDA_FEE_TIER_SEED), configKey.Bytes(), buff[:]}, programID)
+	return address, bump, err
+}

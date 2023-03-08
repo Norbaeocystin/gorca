@@ -35,7 +35,7 @@ type KeyedTickArray struct {
 	TickArray whirlpool.TickArray
 }
 
-func GetTickArrays(client *rpc.Client, market solana.PublicKey) []KeyedTickArray {
+func GetTickArrays(client *rpc.Client, programId, market solana.PublicKey) []KeyedTickArray {
 	memcmp := rpc.RPCFilterMemcmp{9956, market.Bytes()}
 	//var one uint8
 	///// two, three, four uint8
@@ -59,7 +59,7 @@ func GetTickArrays(client *rpc.Client, market solana.PublicKey) []KeyedTickArray
 	}
 	out, err := client.GetProgramAccountsWithOpts(
 		context.TODO(),
-		ORCA_WHIRPOOL_PROGRAM_ID,
+		programId,
 		&opts,
 	)
 	if err != nil {
