@@ -78,7 +78,7 @@ func (m Market) SwapAtoBExactInputInstruction(amount, otherAmountThreshold uint6
 
 func (m Market) SwapAtoBExactInputInstructionWithSlippageUseWPData(amount uint64, slippagePCT float64, owner, ownerTokenAAddress, ownerTokenBAddress solana.PublicKey) solana.Instruction {
 	price := CalculatePriceFromSQRPriceQ64(m.WhirlpoolData.SqrtPrice.BigInt())
-	priceWithSlippage := price - ((price * 100) / slippagePCT)
+	priceWithSlippage := price - (price * (slippagePCT / 100))
 	tick := PriceToTick(priceWithSlippage)
 	tickNormalized := (tick / int32(m.WhirlpoolData.TickSpacing)) * int32(m.WhirlpoolData.TickSpacing)
 	otherAmountThreshold := uint64(float64(amount) * priceWithSlippage)
@@ -169,7 +169,7 @@ func (m Market) SwapBToAExactOutputInstruction(amount, otherAmountThreshold uint
 
 func (m Market) SwapBtoAExactInputInstructionWithSlippageUseWPData(amount uint64, slippagePCT float64, owner, ownerTokenAAddress, ownerTokenBAddress solana.PublicKey) solana.Instruction {
 	price := CalculatePriceFromSQRPriceQ64(m.WhirlpoolData.SqrtPrice.BigInt())
-	priceWithSlippage := price + ((price * 100) / slippagePCT)
+	priceWithSlippage := price + (price * (slippagePCT / 100))
 	tick := PriceToTick(priceWithSlippage)
 	tickNormalized := (tick / int32(m.WhirlpoolData.TickSpacing)) * int32(m.WhirlpoolData.TickSpacing)
 	otherAmountThreshold := uint64(float64(amount) / priceWithSlippage)
