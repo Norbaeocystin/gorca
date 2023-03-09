@@ -6,6 +6,7 @@ TODO implement logic from https://github.com/orca-so/whirlpools/blob/main/sdk/sr
 
 import (
 	"encoding/binary"
+	"fmt"
 	"github.com/gagliardetto/solana-go"
 )
 
@@ -45,7 +46,8 @@ func GetPosition(programID, positionMintKey solana.PublicKey) (solana.PublicKey,
 //}
 
 func GetTickArrayViaFPA(programID, whirlpoolAddress solana.PublicKey, startTick int32) (solana.PublicKey, uint8, error) {
-	address, bump, err := solana.FindProgramAddress([][]byte{[]byte(PDA_TICK_ARRAY_SEED), whirlpoolAddress.Bytes(), []byte(string(startTick))}, programID)
+	s := fmt.Sprintf("%s", startTick)
+	address, bump, err := solana.FindProgramAddress([][]byte{[]byte(PDA_TICK_ARRAY_SEED), whirlpoolAddress.Bytes(), []byte(s)}, programID)
 	return address, bump, err
 }
 
