@@ -14,7 +14,7 @@ func NewMarket(client *rpc.Client, programId, marketId solana.PublicKey) Market 
 	m.ProgramId = programId
 	m.MarketId = marketId
 	// TOO COSTLY
-	m.SetKtas()
+	// m.SetKtas()
 	m.SetData()
 	m.SetOracle()
 	return m
