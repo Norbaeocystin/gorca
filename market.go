@@ -13,6 +13,7 @@ func NewMarket(client *rpc.Client, programId, marketId solana.PublicKey) Market 
 	m.Client = client
 	m.ProgramId = programId
 	m.MarketId = marketId
+	// TOO COSTLY
 	m.SetKtas()
 	m.SetData()
 	m.SetOracle()
@@ -24,7 +25,7 @@ type Market struct {
 	MarketId      solana.PublicKey
 	WhirlpoolData WhirlpoolData
 	Oracle        solana.PublicKey
-	KTAS          []KeyedTickArray
+	KTAS          KTAS
 	Client        *rpc.Client
 }
 

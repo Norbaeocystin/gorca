@@ -13,3 +13,7 @@ var ORACLE_WSOLUSDC_03 = solana.MustPublicKeyFromBase58("4GkRbcYg1VKsZropgai4dMf
 var ORACLE_WSOLUSDC_005 = solana.MustPublicKeyFromBase58("6vK8gSiRHSnZzAa5JsvBF2ej1LrxpRX21Y185CzP4PeA")
 var COMPUTE_BUDGET = solana.MustPublicKeyFromBase58("ComputeBudget111111111111111111111111111111")
 var API_WHILPOOLS = "https://api.mainnet.orca.so/v1/whirlpool/list"
+
+const TICK_ARRAY_SIZE = 88
+const MIN_TICK_INDEX = -443636
+const MAX_TICK_INDEX = 443636
