@@ -44,7 +44,7 @@ func GetPosition(programID, positionMintKey solana.PublicKey) (solana.PublicKey,
 //	return address, bump, err
 //}
 
-func GetTickArrayViaFPA(programID, whirlpoolAddress solana.PublicKey, startTick int64) (solana.PublicKey, uint8, error) {
+func GetTickArrayViaFPA(programID, whirlpoolAddress solana.PublicKey, startTick int32) (solana.PublicKey, uint8, error) {
 	address, bump, err := solana.FindProgramAddress([][]byte{[]byte(PDA_TICK_ARRAY_SEED), whirlpoolAddress.Bytes(), []byte(string(startTick))}, programID)
 	return address, bump, err
 }
