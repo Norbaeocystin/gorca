@@ -20,6 +20,14 @@ func NewMarket(client *rpc.Client, programId, marketId solana.PublicKey) Market 
 	return m
 }
 
+func (m Market) MintA() solana.PublicKey {
+	return *m.WhirlpoolData.TokenMintA
+}
+
+func (m Market) MintB() solana.PublicKey {
+	return *m.WhirlpoolData.TokenMintB
+}
+
 type Market struct {
 	ProgramId     solana.PublicKey
 	MarketId      solana.PublicKey
@@ -167,7 +175,7 @@ func (m Market) SwapAtoBExactOutputInstruction(amount, otherAmountThreshold uint
 	).Build()
 }
 
-func (m Market) SwapBToAExactInputInstruction(amount, otherAmountThreshold uint64, sqrtPriceLimit bin.Uint128, owner, ownerTokenAAddress, ownerTokenBAddress, kta0, kta1, kta2 solana.PublicKey) solana.Instruction {
+func (m Market) SwapBtoAExactInputInstruction(amount, otherAmountThreshold uint64, sqrtPriceLimit bin.Uint128, owner, ownerTokenAAddress, ownerTokenBAddress, kta0, kta1, kta2 solana.PublicKey) solana.Instruction {
 	whirlpool.ProgramID = m.ProgramId
 	return whirlpool.NewSwapInstruction(
 		amount,
@@ -189,7 +197,7 @@ func (m Market) SwapBToAExactInputInstruction(amount, otherAmountThreshold uint6
 	).Build()
 }
 
-func (m Market) SwapBToAExactOutputInstruction(amount, otherAmountThreshold uint64, sqrtPriceLimit bin.Uint128, owner, ownerTokenAAddress, ownerTokenBAddress, kta0, kta1, kta2 solana.PublicKey) solana.Instruction {
+func (m Market) SwapBtoAExactOutputInstruction(amount, otherAmountThreshold uint64, sqrtPriceLimit bin.Uint128, owner, ownerTokenAAddress, ownerTokenBAddress, kta0, kta1, kta2 solana.PublicKey) solana.Instruction {
 	whirlpool.ProgramID = m.ProgramId
 	return whirlpool.NewSwapInstruction(
 		amount,
