@@ -2,6 +2,7 @@ package gorca
 
 import (
 	"encoding/json"
+	"github.com/gagliardetto/solana-go"
 	"io/ioutil"
 	"net/http"
 	"sort"
@@ -130,11 +131,53 @@ func (w Whirlpool) HasSymbol(symbol string) bool {
 	return false
 }
 
+func (w Whirlpool) HasMintKey(mint solana.PublicKey) bool {
+	if w.TokenA.Mint == mint.String() || w.TokenB.Mint == mint.String() {
+		return true
+	}
+	return false
+}
+
+func (w Whirlpool) HasMintKeyAsString(mint string) bool {
+	if w.TokenA.Mint == mint || w.TokenB.Mint == mint {
+		return true
+	}
+	return false
+}
+
 // find pools with symbola symbolb
-func (wapi WhirlpoolsApi) GetPools(symbolA, symbolB string) []Whirlpool {
+func (wapi WhirlpoolsApi) GetPoolsViaSymbols(symbolA, symbolB string) []Whirlpool {
 	found := make([]Whirlpool, 0)
 	for _, whirlpool := range wapi.Whirlpools {
 		if whirlpool.HasSymbol(symbolA) && whirlpool.HasSymbol(symbolB) {
+			found = append(found, whirlpool)
+		}
+	}
+	sort.SliceStable(found, func(i, j int) bool {
+		return int(found[i].Tvl) > int(found[j].Tvl)
+	})
+	return found
+}
+
+// find pools with mints
+func (wapi WhirlpoolsApi) GetPoolsViaMints(mintA, mintB solana.PublicKey) []Whirlpool {
+	found := make([]Whirlpool, 0)
+	for _, whirlpool := range wapi.Whirlpools {
+		if whirlpool.HasMintKey(mintA) && whirlpool.HasMintKey(mintB) {
+			found = append(found, whirlpool)
+		}
+	}
+	sort.SliceStable(found, func(i, j int) bool {
+		return int(found[i].Tvl) > int(found[j].Tvl)
+	})
+	return found
+}
+
+// find pools with symbola symbolb
+func (wapi WhirlpoolsApi) GetPoolsViaMintsAsStrins(mintA, mintB string) []Whirlpool {
+	found := make([]Whirlpool, 0)
+	for _, whirlpool := range wapi.Whirlpools {
+		if whirlpool.HasMintKeyAsString(mintA) && whirlpool.HasMintKeyAsString(mintB) {
 			found = append(found, whirlpool)
 		}
 	}
