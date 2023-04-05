@@ -8,6 +8,7 @@ import (
 	"math/big"
 )
 
+// initiliaze new market
 func NewMarket(client *rpc.Client, programId, marketId solana.PublicKey) Market {
 	var m Market
 	m.Client = client
@@ -20,10 +21,12 @@ func NewMarket(client *rpc.Client, programId, marketId solana.PublicKey) Market 
 	return m
 }
 
+// return mint A of whirlpool
 func (m Market) MintA() solana.PublicKey {
 	return *m.WhirlpoolData.TokenMintA
 }
 
+// return mint B of whirlpool
 func (m Market) MintB() solana.PublicKey {
 	return *m.WhirlpoolData.TokenMintB
 }
@@ -46,10 +49,12 @@ func (m *Market) SetData() {
 	m.WhirlpoolData = m.FetchData()
 }
 
+// set oracle of whirlpool
 func (m *Market) SetOracle() {
 	m.Oracle, _, _ = GetOracle(m.ProgramId, m.MarketId)
 }
 
+// fetch tickarray all of them, good if you want to have info about liquidity in all tick arrays, costly!
 func (m Market) FetchKtas() []KeyedTickArray {
 	ktas := GetTickArrays(m.Client, m.ProgramId, m.MarketId)
 	return ktas
