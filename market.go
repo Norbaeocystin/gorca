@@ -31,6 +31,10 @@ func (m Market) MintB() solana.PublicKey {
 	return *m.WhirlpoolData.TokenMintB
 }
 
+func (m Market) Fee() float64 {
+	return float64(m.WhirlpoolData.FeeRate) / 10_000_00.0
+}
+
 type Market struct {
 	ProgramId     solana.PublicKey
 	MarketId      solana.PublicKey
