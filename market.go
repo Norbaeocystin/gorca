@@ -332,7 +332,7 @@ func (m Market) SwapAtoBExactOutputInstructionWithSlippageUsePrice(amount uint64
 		amount,
 		otherAmountThreshold,
 		sqrtPriceLimit,
-		true,
+		false,
 		true,
 		solana.TokenProgramID,
 		owner,
