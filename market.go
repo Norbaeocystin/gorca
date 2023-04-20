@@ -286,3 +286,64 @@ func (m Market) SwapBtoAExactInputInstructionWithSlippageUsePrice(amount uint64,
 		m.Oracle,
 	).Build()
 }
+
+// price needs to be modified to  (price * decimalsB)/decimalsA
+func (m Market) SwapBtoAExactOutputInstructionWithSlippageUsePrice(amount uint64, price, slippagePCT float64, owner, ownerTokenAAddress, ownerTokenBAddress solana.PublicKey) solana.Instruction {
+	whirlpool.ProgramID = m.ProgramId
+	currentTick := (PriceToTick(price) / int32(m.WhirlpoolData.TickSpacing)) * int32(m.WhirlpoolData.TickSpacing)
+	priceWithSlippage := price + (price * (slippagePCT / 100))
+	tick := PriceToTick(priceWithSlippage)
+	otherAmountThreshold := uint64(float64(amount) * priceWithSlippage * 1.01)
+	sqrtPriceLimit, _ := BigIntToBinUint128(CalculateSqrtPriceQ64(big.NewFloat(priceWithSlippage)))
+	kta0 := m.GetTickAccount(currentTick)
+	kta1 := m.GetTickAccount(tick)
+	return whirlpool.NewSwapInstruction(
+		amount,
+		otherAmountThreshold,
+		sqrtPriceLimit,
+		false,
+		false,
+		solana.TokenProgramID,
+		owner,
+		m.MarketId,
+		ownerTokenAAddress,
+		*m.WhirlpoolData.TokenVaultA,
+		ownerTokenBAddress,
+		*m.WhirlpoolData.TokenVaultB,
+		kta0,
+		kta1,
+		kta1,
+		m.Oracle,
+	).Build()
+}
+
+func (m Market) SwapAtoBExactOutputInstructionWithSlippageUsePrice(amount uint64, price, slippagePCT float64, owner, ownerTokenAAddress, ownerTokenBAddress solana.PublicKey) solana.Instruction {
+	whirlpool.ProgramID = m.ProgramId
+	currentTick := (PriceToTick(price) / int32(m.WhirlpoolData.TickSpacing)) * int32(m.WhirlpoolData.TickSpacing)
+	priceWithSlippage := price - (price * (slippagePCT / 100))
+	tick := PriceToTick(priceWithSlippage)
+	// tickNormalized := (tick / int32(m.WhirlpoolData.TickSpacing)) * int32(m.WhirlpoolData.TickSpacing)
+	otherAmountThreshold := uint64((float64(amount) / priceWithSlippage) * 1.01)
+	sqrtPriceLimit, _ := BigIntToBinUint128(CalculateSqrtPriceQ64(big.NewFloat(priceWithSlippage)))
+	kta0 := m.GetTickAccount(currentTick)
+	kta1 := m.GetTickAccount(tick)
+	// kta0, kta1, kta2 := m.GetKtasForTicks(currentTick, tickNormalized)
+	return whirlpool.NewSwapInstruction(
+		amount,
+		otherAmountThreshold,
+		sqrtPriceLimit,
+		true,
+		true,
+		solana.TokenProgramID,
+		owner,
+		m.MarketId,
+		ownerTokenAAddress,
+		*m.WhirlpoolData.TokenVaultA,
+		ownerTokenBAddress,
+		*m.WhirlpoolData.TokenVaultB,
+		kta0,
+		kta1,
+		kta1,
+		m.Oracle,
+	).Build()
+}
