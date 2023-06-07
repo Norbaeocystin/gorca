@@ -7,20 +7,10 @@ import (
 	"github.com/gagliardetto/solana-go/programs/token"
 	"github.com/gagliardetto/solana-go/rpc"
 	"log"
-	"strings"
 )
 
-type PositionKeys struct {
-	PositionMint         solana.PublicKey
-	Position             solana.PublicKey
-	PositionMetadata     solana.PublicKey
-	PositionTokenAccount solana.PublicKey
-	WhirpoolAddress      solana.PublicKey
-	OrcaPosition         bool
-}
-
-func FindOrcaPositionsForOwner(client *rpc.Client, owner solana.PublicKey) ([]PositionKeys, error) {
-	positionsKeys := make([]PositionKeys, 0)
+func FindOrcaPositionsForOwner(client *rpc.Client, owner, pool solana.PublicKey) ([]PositionData, error) {
+	positions := make([]PositionData, 0)
 	tokens, err := client.GetTokenAccountsByOwner(context.TODO(), owner,
 		&rpc.GetTokenAccountsConfig{
 			Mint:      nil,
@@ -44,62 +34,14 @@ func FindOrcaPositionsForOwner(client *rpc.Client, owner solana.PublicKey) ([]Po
 		if ta.Amount == 1 {
 			// tkPubkey - positionTokenAccount, ta.Mint - positionMint
 			// log.Println(tk.Pubkey, ta.Mint)
-			keys, err := FindPublicKeysForPositioMint(client, ta.Mint)
-			if err != nil {
-				return positionsKeys, err
-			}
-			// var pubKey solana.PublicKey
-			if keys.OrcaPosition == true {
-				positionsKeys = append(positionsKeys, keys)
+			pk, _, _ := GetPosition(ORCA_WHIRPOOL_PROGRAM_ID, ta.Mint)
+			position := GetPositionData(client, pk)
+			if position.Whirlpool != nil && position.Whirlpool.Equals(pool) {
+				positions = append(positions, position)
 			}
 		}
 	}
-	return positionsKeys, nil
-}
-
-// not working if use with SOL, position needs to be open with WSOL
-func FindPublicKeysForPositioMint(client *rpc.Client, positionMint solana.PublicKey) (PositionKeys, error) {
-	var positionKeys PositionKeys
-	positionKeys.OrcaPosition = false
-	one := 1
-	signature, err := client.GetSignaturesForAddressWithOpts(context.TODO(), positionMint,
-		&rpc.GetSignaturesForAddressOpts{
-			&one,
-			solana.Signature{},
-			solana.Signature{},
-			rpc.CommitmentFinalized,
-			nil,
-		})
-	if err != nil {
-		return positionKeys, err
-	}
-	version := uint64(0)
-	opts := rpc.GetTransactionOpts{
-		Encoding:                       solana.EncodingBase64,
-		Commitment:                     rpc.CommitmentFinalized,
-		MaxSupportedTransactionVersion: &version,
-	}
-	// log.Println("sign", signature[0].Signature)
-
-	txs, err := client.GetTransaction(context.TODO(), signature[0].Signature, &opts)
-	if err != nil {
-		log.Println(err)
-		return positionKeys, err
-	}
-	if strings.Contains(strings.Join(txs.Meta.LogMessages, ","), ORCA_WHIRPOOL_PROGRAM_ID.String()) {
-		tx, _ := txs.Transaction.GetTransaction()
-		accounts, _ := tx.AccountMetaList()
-		if len(accounts) > 8 {
-			// log.Println("Match tx with signature", signature[0].Signature)
-			positionKeys.Position = accounts[2].PublicKey
-			positionKeys.PositionTokenAccount = accounts[4].PublicKey
-			positionKeys.PositionMetadata = accounts[3].PublicKey
-			positionKeys.WhirpoolAddress = accounts[5].PublicKey
-			positionKeys.PositionMint = positionMint
-			positionKeys.OrcaPosition = true
-		}
-	}
-	return positionKeys, nil
+	return positions, nil
 }
 
 func GetPositionData(client *rpc.Client, position solana.PublicKey) PositionData {
