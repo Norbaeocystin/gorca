@@ -8,6 +8,7 @@ import (
 	"github.com/gagliardetto/solana-go/rpc"
 )
 
+// TODO add rewards ...
 func Collect(client *rpc.Client, whirlpoolAddress, position, positionTokenAccount,
 	tokenOwnerAccountA, tokenVaultA, tokenOwnerAccountB, tokenVaultB solana.PublicKey, owner solana.PrivateKey) solana.Signature {
 	whirlpool2.ProgramID = ORCA_WHIRPOOL_PROGRAM_ID

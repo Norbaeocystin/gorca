@@ -44,7 +44,7 @@ func FindOrcaPositionsForOwner(client *rpc.Client, owner, pool solana.PublicKey)
 	return positions, nil
 }
 
-func FindOrcaPositionsForOwner(client *rpc.Client, owner solana.PublicKey) ([]PositionData, error) {
+func FindOrcaPositionsForOwnerAll(client *rpc.Client, owner solana.PublicKey) ([]PositionData, error) {
 	positions := make([]PositionData, 0)
 	tokens, err := client.GetTokenAccountsByOwner(context.TODO(), owner,
 		&rpc.GetTokenAccountsConfig{
